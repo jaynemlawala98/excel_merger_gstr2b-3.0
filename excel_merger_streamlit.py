@@ -30,12 +30,31 @@ st.markdown("""
     }
     
     .file-list {
-        background-color: #f0f2f6;
+        background-color: #ffffff;
         padding: 1rem;
         border-radius: 0.5rem;
         margin: 1rem 0;
         min-height: 200px;
-        border: 1px solid #e1e5eb;
+        border: 2px solid #1f77b4;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .file-list h4 {
+        color: #1f77b4;
+        margin-bottom: 0.5rem;
+    }
+    
+    .file-list ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    .file-list li {
+        padding: 0.5rem;
+        margin: 0.25rem 0;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        border-left: 4px solid #1f77b4;
     }
     
     .footer {
@@ -77,7 +96,7 @@ def update_file_list():
         file_list_html += "</ul></div>"
         st.markdown(file_list_html, unsafe_allow_html=True)
     else:
-        st.markdown("<div class='file-list'>Use 'Select Files' button to add Excel files.</div>", unsafe_allow_html=True)
+        st.markdown("<div class='file-list'><h4>Selected Files:</h4><p style='color: #666; font-style: italic;'>Use 'Select Files' button above to add Excel files.</p></div>", unsafe_allow_html=True)
 
 def move_up():
     """Move the last file to the first position"""
@@ -122,6 +141,13 @@ def remove_file():
         removed_file = st.session_state.selected_files.pop()
         if removed_file in st.session_state.file_contents:
             del st.session_state.file_contents[removed_file]
+        st.rerun()
+
+def clear_all_files():
+    """Clear all files from the list"""
+    st.session_state.selected_files = []
+    st.session_state.file_contents = {}
+    st.rerun()
 
 def merge_files():
     """Merge the selected Excel files"""
@@ -243,13 +269,10 @@ def main():
         with col3:
             if st.button("Remove File", help="Remove last file from list"):
                 remove_file()
-                st.rerun()
         
         with col4:
             if st.button("Clear All", help="Remove all files"):
-                st.session_state.selected_files = []
-                st.session_state.file_contents = {}
-                st.rerun()
+                clear_all_files()
     
     # Merge button
     if st.session_state.selected_files:
